@@ -19,10 +19,13 @@ public class ProductCategoryImpl implements IProductCategory{
             StringBuffer sql=new StringBuffer();
             sql.append("select * from easybuy_product_category where 1=1");
             if(!"".equals(parentId)||null!=parentId){
-              sql.append(" and parentId = 0");
+              sql.append(" and parentId = ?");
             }
             Connection conn= DataSourceUtil.getConn();
             PreparedStatement pstmt=conn.prepareStatement(sql.toString());
+            if (!"".equals(parentId) && null != parentId) {
+                pstmt.setObject(1, parentId);
+            }
             ResultSet rs=pstmt.executeQuery();
             while (rs.next()){
                 productCategory=new EasybuyProductCategory();
@@ -36,7 +39,6 @@ public class ProductCategoryImpl implements IProductCategory{
         }catch (Exception e){
             e.printStackTrace();
         }
-
         return productCategories;
     }
 }
